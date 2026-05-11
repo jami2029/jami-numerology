@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ジャミの数秘術診断🔢</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=Shippori+Mincho:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #fdf6ff;
+    --bg2: #f3e8ff;
+    --accent: #a855f7;
+    --accent2: #ec4899;
+    --accent3: #06b6d4;
+    --text: #1e1b2e;
+    --muted: #7c6f9a;
+    --card: #ffffff;
+    --border: #e9d5ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* 背景装飾 */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(168,85,247,0.12) 0%, transparent 40%),
+      radial-gradient(circle at 85% 70%, rgba(236,72,153,0.1) 0%, transparent 40%),
+      radial-gradient(circle at 50% 90%, rgba(6,182,212,0.08) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  /* ヘッダー */
+  .header {
+    text-align: center;
+    padding: 48px 0 32px;
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 6px 18px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    font-weight: 700;
+  }
+
+  .header h1 {
+    font-size: clamp(26px, 7vw, 38px);
+    font-weight: 900;
+    line-height: 1.3;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 60%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  /* 浮遊する数字デコ */
+  .deco-numbers {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .deco-num {
+    position: absolute;
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    opacity: 0.04;
+    color: var(--accent);
+    animation: floatNum linear infinite;
+  }
+
+  @keyframes floatNum {
+    0% { transform: translateY(100vh) rotate(0deg); }
+    100% { transform: translateY(-20vh) rotate(360deg); }
+  }
+
+  /* フォームカード */
+  .card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 24px;
+    padding: 36px 32px;
+    box-shadow: 0 8px 40px rgba(168,85,247,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  .form-row {
+    margin-bottom: 24px;
+  }
+
+  .date-inputs {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .date-inputs select,
+  .date-inputs input {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .date-inputs select:focus,
+  .date-inputs input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(168,85,247,0.15);
+  }
+
+  .year-input { width: 100px; }
+  .month-select { flex: 1; }
+  .day-select { flex: 1; }
+
+  .date-sep {
+    color: var(--muted);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .name-input {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .name-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(168,85,247,0.15);
+  }
+
+  .hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 17px;
+    font-weight: 900;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    box-shadow: 0 6px 24px rgba(168,85,247,0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    pointer-events: none;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(168,85,247,0.4); }
+  .btn:active { transform: translateY(0); }
+
+  /* ローディング */
+  #loading {
+    display: none;
+    text-align: center;
+    padding: 40px 0;
+  }
+  .spinner {
+    width: 48px; height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* 結果 */
+  #result { display: none; }
+
+  .result-header {
+    text-align: center;
+    padding: 32px 0 24px;
+  }
+
+  .result-number-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+
+  .result-number {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Shippori Mincho', serif;
+    font-size: 56px;
+    font-weight: 700;
+    color: #fff;
+    box-shadow: 0 12px 40px rgba(168,85,247,0.4);
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    margin: 0 auto;
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  .result-number-ring {
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px dashed rgba(168,85,247,0.3);
+    animation: rotateSlow 8s linear infinite;
+  }
+  @keyframes rotateSlow { to { transform: rotate(360deg); } }
+
+  .result-title {
+    font-size: 22px;
+    font-weight: 900;
+    margin-bottom: 6px;
+  }
+  .result-subtitle {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* 結果カード */
+  .result-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 16px;
+    animation: fadeUp 0.4s ease both;
+    box-shadow: 0 4px 20px rgba(168,85,247,0.06);
+  }
+  .result-card:nth-child(2) { animation-delay: 0.1s; }
+  .result-card:nth-child(3) { animation-delay: 0.2s; }
+  .result-card:nth-child(4) { animation-delay: 0.3s; }
+  .result-card:nth-child(5) { animation-delay: 0.4s; }
+
+  @keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .rc-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .rc-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .rc-title {
+    font-size: 20px;
+    font-weight: 900;
+    margin-bottom: 12px;
+  }
+
+  .rc-text {
+    font-size: 14px;
+    line-height: 2;
+    color: #3d3450;
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .tag {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .tag-good { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+  .tag-bad { background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; }
+
+  .love-meter {
+    display: flex;
+    gap: 4px;
+    margin-top: 10px;
+  }
+  .heart { font-size: 20px; }
+  .heart.on { color: var(--accent2); }
+  .heart.off { color: #e9d5ff; }
+
+  /* note誘導バナー */
+  .note-banner {
+    background: linear-gradient(135deg, #1e1b2e, #2d1b4e);
+    border-radius: 20px;
+    padding: 28px;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 16px;
+    animation: fadeUp 0.4s ease 0.5s both;
+  }
+  .note-banner .nb-emoji { font-size: 32px; margin-bottom: 12px; }
+  .note-banner .nb-title {
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 8px;
+    background: linear-gradient(90deg, #c084fc, #f9a8d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .note-banner .nb-text { font-size: 13px; color: #c4b5fd; line-height: 1.8; margin-bottom: 18px; }
+  .note-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 14px;
+    font-weight: 900;
+    padding: 12px 28px;
+    border-radius: 12px;
+    text-decoration: none;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 16px rgba(168,85,247,0.4);
+  }
+
+  /* やり直しボタン */
+  .retry-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    color: var(--accent);
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+    animation: fadeUp 0.4s ease 0.6s both;
+  }
+  .retry-btn:hover { border-color: var(--accent); background: var(--bg2); }
+
+  /* シェア */
+  .share-wrap {
+    text-align: center;
+    margin-top: 8px;
+    animation: fadeUp 0.4s ease 0.55s both;
+  }
+  .share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: #000;
+    color: #fff;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    letter-spacing: 1px;
+  }
+  .share-btn:hover { opacity: 0.85; }
+
+  /* マスターナンバーバッジ */
+  .master-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 2px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  @media (max-width: 400px) {
+    .card { padding: 24px 18px; }
+    .result-card { padding: 22px 18px; }
+    .date-inputs { flex-wrap: wrap; }
+    .year-input { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 背景の浮遊数字 -->
+<div class="deco-numbers" id="decoNums"></div>
+
+<div class="wrap">
+
+  <!-- ヘッダー -->
+  <div class="header">
+    <div class="header-badge">🔢 ジャミの数秘術診断</div>
+    <h1>あなたの「誕生数」を<br>今すぐ知ろう✨</h1>
+    <p>生年月日を入力するだけ。<br>あなたの本質・恋愛・仕事の傾向がわかります🌿</p>
+  </div>
+
+  <!-- 入力フォーム -->
+  <div id="formSection">
+    <div class="card">
+
+      <div class="form-row">
+        <label class="form-label">🎂 生年月日</label>
+        <div class="date-inputs">
+          <input type="number" class="year-input" id="year" placeholder="1995" min="1920" max="2010">
+          <span class="date-sep">年</span>
+          <select class="month-select" id="month">
+            <option value="">月</option>
+            <option value="1">1月</option><option value="2">2月</option><option value="3">3月</option>
+            <option value="4">4月</option><option value="5">5月</option><option value="6">6月</option>
+            <option value="7">7月</option><option value="8">8月</option><option value="9">9月</option>
+            <option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
+          </select>
+          <select class="day-select" id="day">
+            <option value="">日</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="form-label">✍️ ニックネーム（任意）</label>
+        <input type="text" class="name-input" id="nickname" placeholder="例：みき、さくら">
+        <p class="hint">※ 結果画面でのみ使用します。入力しなくてもOK！</p>
+      </div>
+
+      <button class="btn" onclick="diagnose()">🔮 診断する</button>
+    </div>
+  </div>
+
+  <!-- ローディング -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <p style="color:var(--muted);font-size:14px;">数字を読み解いています…✨</p>
+  </div>
+
+  <!-- 結果 -->
+  <div id="result"></div>
+
+</div>
+
+<script>
+// 日付セレクト動的生成
+document.getElementById('month').addEventListener('change', updateDays);
+document.getElementById('year').addEventListener('change', updateDays);
+
+function updateDays() {
+  const y = parseInt(document.getElementById('year').value) || 2000;
+  const m = parseInt(document.getElementById('month').value);
+  const dayEl = document.getElementById('day');
+  const cur = dayEl.value;
+  dayEl.innerHTML = '<option value="">日</option>';
+  if (!m) return;
+  const days = new Date(y, m, 0).getDate();
+  for (let i = 1; i <= days; i++) {
+    const o = document.createElement('option');
+    o.value = i; o.textContent = i + '日';
+    if (i == cur) o.selected = true;
+    dayEl.appendChild(o);
+  }
+}
+
+// 浮遊数字背景
+const deco = document.getElementById('decoNums');
+for (let i = 0; i < 18; i++) {
+  const el = document.createElement('div');
+  el.className = 'deco-num';
+  el.textContent = Math.floor(Math.random() * 9) + 1;
+  el.style.left = Math.random() * 100 + '%';
+  el.style.fontSize = (40 + Math.random() * 80) + 'px';
+  el.style.animationDuration = (12 + Math.random() * 20) + 's';
+  el.style.animationDelay = -(Math.random() * 30) + 's';
+  deco.appendChild(el);
+}
+
+// 誕生数計算
+function calcLifePath(y, m, d) {
+  const str = String(y) + String(m) + String(d);
+  let nums = str.split('').map(Number);
+  function reduce(n) {
+    if (n === 11 || n === 22) return n;
+    if (n < 10) return n;
+    return reduce(n.toString().split('').reduce((a, b) => a + parseInt(b), 0));
+  }
+  const sum = nums.reduce((a, b) => a + b, 0);
+  return reduce(sum);
+}
+
+// 数字データ
+const data = {
+  1: {
+    keyword: "開拓者",
+    emoji: "🔥",
+    color: "#ef4444",
+    summary: "誰よりも先に走るリーダータイプ。「一番でいたい」という本能があり、自分の力で道を切り開く強さを持っています。",
+    love: "追いかけるより追われたい派。好きになると一途だけど、束縛されると急に冷める。",
+    loveScore: 4,
+    work: "自分裁量が大きい仕事が向いてる。フリーランス・起業・リーダー職で輝けます。",
+    good: ["リーダーシップ", "決断力", "開拓力", "自立心"],
+    bad: ["孤軍奮闘しがち", "人に任せられない"],
+    advice: "「一人でやらなくていい」を覚えると、もっと遠くへ行けます。人を信じる勇気を。"
+  },
+  2: {
+    keyword: "調和の人",
+    emoji: "🌸",
+    color: "#ec4899",
+    summary: "チームの空気を読む天才。誰かのために動ける優しさと共感力が最大の武器。縁の下の力持ちタイプ。",
+    love: "察してほしいけど言えない。合わせすぎて自分を見失うことも。でも愛情は本物で深い。",
+    loveScore: 5,
+    work: "チームワーク重視の職場でこそ光る。サポート職・カウンセラー・コーディネーターが◎。",
+    good: ["共感力", "調整力", "サポート力", "気配り"],
+    bad: ["自己主張が弱い", "NO と言えない"],
+    advice: "「自分の気持ち」を後回しにしないで。あなたが満たされてこそ、周りも幸せになれる。"
+  },
+  3: {
+    keyword: "表現者",
+    emoji: "✨",
+    color: "#f59e0b",
+    summary: "明るく素直で周りに元気を与えるムードメーカー。天性の表現力と創造力で、いるだけで場が華やぐ。",
+    love: "恋愛も楽しみたい派。刺激があると燃えるけど、マンネリになると飽きが来やすい。",
+    loveScore: 4,
+    work: "楽しいが原動力。クリエイター・発信者・接客・エンタメ系の仕事が向いてます。",
+    good: ["表現力", "コミュ力", "アイデア", "明るさ"],
+    bad: ["飽きやすい", "集中力が続かない"],
+    advice: "「楽しい」を仕事にしていい。あなたの明るさは才能だから、遠慮せず使って。"
+  },
+  4: {
+    keyword: "職人気質",
+    emoji: "🏗️",
+    color: "#84cc16",
+    summary: "コツコツと積み上げる誠実さが最大の強み。信頼されるのに時間がかかるけど、一度築いた信頼は崩れない。",
+    love: "慎重すぎて告白が遅い。でも付き合ったら誠実で安定感バツグン。長続きするタイプ。",
+    loveScore: 3,
+    work: "コツコツできる仕事が◎。会計・エンジニア・研究・管理職など。ルーティンも苦にならない。",
+    good: ["誠実さ", "継続力", "安定感", "計画力"],
+    bad: ["融通が利きにくい", "変化が苦手"],
+    advice: "「もっと自由に」って言われても無理しなくていい。あなたの堅実さは最高の武器です。"
+  },
+  5: {
+    keyword: "自由人",
+    emoji: "🦋",
+    color: "#06b6d4",
+    summary: "変化と刺激を愛する自由な魂。好奇心旺盛で新しいことへの適応力が高く、どこへ行っても生き残れる。",
+    love: "自由を縛られると途端に逃げたくなる。相手に「追いかけさせる」のがうまい。",
+    loveScore: 3,
+    work: "変化のある仕事が◎。旅・営業・フリーランス・SNS運用など動き回れる環境向き。",
+    good: ["適応力", "好奇心", "行動力", "魅力"],
+    bad: ["飽きっぽい", "自由すぎて計画が立てにくい"],
+    advice: "「落ち着け」って言われても気にしない。あなたは動いてこそ輝くタイプです。"
+  },
+  6: {
+    keyword: "愛の人",
+    emoji: "💕",
+    color: "#a855f7",
+    summary: "愛情深く世話好き。人や環境を整えることに喜びを感じる、家族・チームの中心的存在。",
+    love: "愛しすぎて重くなることも。でもその愛の深さは本物で、大切にされる価値がある。",
+    loveScore: 5,
+    work: "人を助ける仕事で輝く。教育・福祉・美容・カウンセリングが天職になりやすい。",
+    good: ["愛情深さ", "世話好き", "責任感", "調和力"],
+    bad: ["自己犠牲しすぎ", "断れない"],
+    advice: "自分を後回しにするのをやめて。あなたが幸せでいることが、周りへの最大の愛です。"
+  },
+  7: {
+    keyword: "探求者",
+    emoji: "🔭",
+    color: "#6366f1",
+    summary: "真実と深さを追い求める知性の人。表面的な付き合いより、本質的なつながりを求める。",
+    love: "なかなか心を開かない。でも一度開くと深く愛せる。「謎めいてる」と言われがち。",
+    loveScore: 2,
+    work: "調査・研究・専門職・IT・哲学的な思考が必要な仕事が◎。",
+    good: ["分析力", "直感力", "専門性", "深い思考"],
+    bad: ["孤独になりがち", "信じるのに時間がかかる"],
+    advice: "一人の時間は必要。でも「誰かに頼る」練習もしてみて。弱さは魅力になるよ。"
+  },
+  8: {
+    keyword: "達成者",
+    emoji: "💎",
+    color: "#14b8a6",
+    summary: "目標達成への執念と現実的な判断力が光る。お金・地位・成功を手にする力を持っている。",
+    love: "恋愛より仕事が優先になりがち。でも本気になったら全力で守るタイプ。",
+    loveScore: 3,
+    work: "経営・マネジメント・投資・営業など「結果」を求められる仕事が向いてる。",
+    good: ["実行力", "野心", "判断力", "経営感覚"],
+    bad: ["完璧主義", "コントロールしがち"],
+    advice: "「勝ちにこだわる」のはいいこと。でも過程を楽しむ余裕も持てると、もっとうまくいく。"
+  },
+  9: {
+    keyword: "慈愛の人",
+    emoji: "🌙",
+    color: "#8b5cf6",
+    summary: "深い共感力と広い愛を持つ、魂の完成形。人類全体を愛せる大きな器の持ち主。",
+    love: "愛が深すぎて疲れる。別れた後も相手の幸せを願ってしまう優しすぎる人。",
+    loveScore: 4,
+    work: "社会貢献・アート・ヒーリング・国際的な仕事が◎。人の痛みをわかる仕事で輝く。",
+    good: ["共感力", "包容力", "芸術的センス", "大局観"],
+    bad: ["自己犠牲", "感情の波が大きい"],
+    advice: "「自分を一番に愛すること」が9の人の課題。まず自分を満たして。"
+  },
+  11: {
+    keyword: "インスピレーション",
+    emoji: "⚡",
+    color: "#f59e0b",
+    summary: "【マスターナンバー11】高い直感力と精神性を持つ特別な魂。人々にインスピレーションを与える役割を持つ。",
+    love: "深いところで繋がれる相手を求める。表面的な恋愛では満足できない。",
+    loveScore: 4,
+    work: "直感を活かせる仕事・スピリチュアル・芸術・カウンセリング・先生業が◎。",
+    good: ["直感力", "インスピレーション", "精神性", "影響力"],
+    bad: ["繊細すぎる", "理想と現実のギャップに苦しむ"],
+    advice: "あなたの直感を信じて。「変わってる」じゃなくて「特別」なんです。"
+  },
+  22: {
+    keyword: "マスタービルダー",
+    emoji: "🏛️",
+    color: "#10b981",
+    summary: "【マスターナンバー22】夢を現実にする力を持つ最強の数字。大きなビジョンを形にできる稀有な存在。",
+    love: "パートナーシップを大切にする。でも自分の夢への情熱が強すぎて、相手が追いつけないことも。",
+    loveScore: 3,
+    work: "起業家・建築家・大規模プロジェクト・社会変革など「大きなもの」を作る仕事が天職。",
+    good: ["実現力", "大局観", "リーダーシップ", "情熱"],
+    bad: ["プレッシャーに弱い", "完璧主義"],
+    advice: "あなたには世界を変える力がある。その責任を恐れずに、大きな夢を描いて。"
+  }
+};
+
+function diagnose() {
+  const y = parseInt(document.getElementById('year').value);
+  const m = parseInt(document.getElementById('month').value);
+  const d = parseInt(document.getElementById('day').value);
+  const name = document.getElementById('nickname').value.trim();
+
+  if (!y || !m || !d) {
+    alert('生年月日をすべて入力してください🔢');
+    return;
+  }
+  if (y < 1920 || y > 2010) {
+    alert('年を正しく入力してください');
+    return;
+  }
+
+  // ローディング
+  document.getElementById('formSection').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+
+  setTimeout(() => {
+    const num = calcLifePath(y, m, d);
+    const info = data[num] || data[9];
+    showResult(num, info, name, y, m, d);
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('result').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 1800);
+}
+
+function showResult(num, info, name, y, m, d) {
+  const isMaster = num === 11 || num === 22;
+  const nameStr = name ? `${name}さんの` : 'あなたの';
+  const hearts = Array.from({length: 5}, (_, i) =>
+    `<span class="heart ${i < info.loveScore ? 'on' : 'off'}">♥</span>`
+  ).join('');
+
+  // 今年の個人年数
+  const now = new Date();
+  const thisYear = now.getFullYear();
+  function calcPersonalYear(y2, m2, d2, year) {
+    const str = String(m2) + String(d2) + String(year);
+    let s = str.split('').reduce((a,b) => a + parseInt(b), 0);
+    while (s > 9 && s !== 11 && s !== 22) {
+      s = s.toString().split('').reduce((a,b) => a + parseInt(b), 0);
+    }
+    return s;
+  }
+  const py = calcPersonalYear(y, m, d, thisYear);
+
+  document.getElementById('result').innerHTML = `
+    <div class="result-header">
+      <div class="result-number-wrap">
+        <div class="result-number" style="background: linear-gradient(135deg, ${info.color}, ${info.color}99)">
+          ${num}
+        </div>
+        <div class="result-number-ring"></div>
+      </div>
+      <div class="result-title">
+        ${nameStr}誕生数は【${num}】${isMaster ? '<span class="master-badge">✨ MASTER</span>' : ''}
+      </div>
+      <div class="result-subtitle">${info.emoji} ${info.keyword}</div>
+    </div>
+
+    <div class="result-card">
+      <div class="rc-label">PERSONALITY · 本質</div>
+      <div class="rc-title">${info.emoji} ${info.keyword}タイプ</div>
+      <div class="rc-text">${info.summary}</div>
+      <div class="tag-list">
+        ${info.good.map(t => `<span class="tag tag-good">✓ ${t}</span>`).join('')}
+        ${info.bad.map(t => `<span class="tag tag-bad">△ ${t}</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="result-card">
+      <div class="rc-label">LOVE · 恋愛傾向</div>
+      <div class="rc-title">💕 恋愛相性スコア</div>
+      <div class="love-meter">${hearts}</div>
+      <div class="rc-text" style="margin-top:12px">${info.love}</div>
+    </div>
+
+    <div class="result-card">
+      <div class="rc-label">WORK · 仕事運</div>
+      <div class="rc-title">💼 向いてる仕事</div>
+      <div class="rc-text">${info.work}</div>
+    </div>
+
+    <div class="result-card">
+      <div class="rc-label">THIS YEAR · ${thisYear}年の運気</div>
+      <div class="rc-title">📅 今年は「個人年${py}」の年</div>
+      <div class="rc-text">今年のあなたのテーマは「${getPersonalYearTheme(py)}」。${getPersonalYearDesc(py)}</div>
+    </div>
+
+    <div class="result-card">
+      <div class="rc-label">MESSAGE · ジャミより</div>
+      <div class="rc-title">🌿 あなたへのメッセージ</div>
+      <div class="rc-text">${info.advice}</div>
+    </div>
+
+    <div class="note-banner">
+      <div class="nb-emoji">📖</div>
+      <div class="nb-title">もっと詳しく知りたい人へ</div>
+      <div class="nb-text">
+        誕生数${num}の人の<br>
+        「恋愛・仕事・今年の過ごし方」を<br>
+        ジャミが徹底鑑定した記事を<br>
+        noteで販売中🔢✨
+      </div>
+      <a class="note-btn" href="https://note.com/tiktiktk2029" target="_blank">📝 noteで詳細鑑定を見る</a>
+    </div>
+
+    <div class="share-wrap">
+      <button class="share-btn" onclick="shareResult(${num}, '${info.keyword}', '${info.emoji}')">
+        𝕏 結果をXでシェアする
+      </button>
+    </div>
+    <br>
+    <button class="retry-btn" onclick="retry()">🔄 もう一度診断する</button>
+  `;
+}
+
+function getPersonalYearTheme(n) {
+  const t = {1:'スタート', 2:'育てる', 3:'表現', 4:'基盤作り', 5:'変化', 6:'愛と責任', 7:'内省', 8:'収穫', 9:'手放し', 11:'直感', 22:'大きな実現'};
+  return t[n] || 'スタート';
+}
+function getPersonalYearDesc(n) {
+  const d = {
+    1: '新しいことを始めるなら今！エネルギーが高まっているので、行動すればするほど道が開けます。',
+    2: '焦らず関係を育てる年。パートナーシップや人間関係が鍵になります。',
+    3: '発信・創造・表現が追い風。SNSや発信活動を積極的に。',
+    4: '地道な努力が実る年。コツコツ積み上げたことが後から大きな形になります。',
+    5: '変化と冒険の年。新しい出会いや環境の変化を恐れないで。',
+    6: '愛と責任の年。家族・パートナー・コミュニティとの絆を深めて。',
+    7: '内省と学びの年。一人の時間を大切に、自分と向き合って。',
+    8: 'お金と仕事に動きが出る年。動いた人に引き寄せられます。',
+    9: '手放しと完成の年。いらないものを手放すと新しいステージへ。',
+    11: '直感が冴える特別な年。インスピレーションを信じて動いて。',
+    22: '大きな夢を形にできる年。スケールの大きいことに挑戦して。'
+  };
+  return d[n] || '新しいことを始めるなら今！';
+}
+
+function shareResult(num, keyword, emoji) {
+  const text = `ジャミの数秘術診断🔢\n\n私の誕生数は【${num}】${emoji}\nキーワード：「${keyword}」\n\nあなたも診断してみて✨\n\n#数秘術 #ジャミ診断`;
+  const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+  window.open(url, '_blank');
+}
+
+function retry() {
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('result').innerHTML = '';
+  document.getElementById('formSection').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
